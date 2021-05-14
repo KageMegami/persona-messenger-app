@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1003616047609",
+    "project_id": "persona-messenger",
+    "storage_bucket": "persona-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003616047609:android:652b85f9bfd83d71272d28",
+        "android_client_info": {
+          "package_name": "com.KageMegami.personaMessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003616047609-2rdkjunjfoah1nva80eeqoout0162el0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.KageMegami.personaMessenger",
+            "certificate_hash": "81f35ca7a2a00c485d87b6974724e64295ca3968"
+          }
+        },
+        {
+          "client_id": "1003616047609-ptgkqrqpkfpmu9u2e9d8bo1q85f0o49m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa88TZX_Kyw440ofy17irJxP7ps_QTG7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003616047609-ptgkqrqpkfpmu9u2e9d8bo1q85f0o49m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
