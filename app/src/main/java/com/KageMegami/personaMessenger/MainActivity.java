@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     public String idToken;
     public static Socket mSocket;
-    public JSONArray friends;
+    public JSONObject[] conversations;
 
 
     @Override
@@ -66,21 +66,24 @@ public class MainActivity extends AppCompatActivity {
                         OkHttpClient client = new OkHttpClient().newBuilder()
                                 .build();
                         Request request = new Request.Builder()
-                                .url("http://192.168.200.156:3000/friends")
+                                .url("http://192.168.200.156:3000/conversations")
                                 .method("GET", null)
                                 .addHeader("Authorization", "Bearer " + idToken)
                                 .build();
                         try {
                             Response response = client.newCall(request).execute();
                             if (response.isSuccessful()) {
-                                friends =  new JSONObject(response.body().string()).getJSONArray("data");
+                                JSONArray convs = new JSONObject(response.body().string()).getJSONArray("data");
+                                conversations = new JSONObject[convs.length()];
+                                for (int i = 0; i < convs.length(); i += 1)
+                                    conversations[i] = convs.getJSONObject(i);
                             }
                         } catch (IOException | JSONException e) {
                         }
                         runOnUiThread(() -> {
                             Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
                             HomeFragment fragment = (HomeFragment)(navHostFragment.getChildFragmentManager().getFragments().get(0));
-                            fragment.updateList();
+                            fragment.updateRecyclerView();
                         });
                     }).start();
 
