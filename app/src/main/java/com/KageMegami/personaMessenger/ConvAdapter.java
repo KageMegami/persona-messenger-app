@@ -1,6 +1,7 @@
 package com.KageMegami.personaMessenger;
 
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -50,7 +52,15 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         try {
             viewHolder.name.setText(conversations[position].getString("name"));
             Glide.with(fragment).load(conversations[position].getString("photoUrl")).into(viewHolder.image);
-
+            viewHolder.itemView.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                try {
+                    bundle.putString("conversation_id", conversations[position].getString("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_messenger, bundle);
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }

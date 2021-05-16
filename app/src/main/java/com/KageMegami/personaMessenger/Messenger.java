@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +32,14 @@ public class Messenger extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TextView convId = new TextView(getContext());
+        String id = getArguments().getString("conversation_id");
+        convId.setText(id);
         messageContainer = (LinearLayout)view.findViewById(R.id.messageList);
+        messageContainer.addView(convId);
+        view.findViewById(R.id.back).setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).navigateUp();
+        });
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +50,7 @@ public class Messenger extends Fragment {
                 textView.setText(message);
                 messageContainer.addView(textView);
                 //send message to server
-               MainActivity.mSocket.emit("new_message", message);
+                MainActivity.mSocket.emit("new_message", message);
                 new java.util.Timer().schedule(
                     new java.util.TimerTask() {
                         @Override
