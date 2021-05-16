@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Messenger extends Fragment {
+    private  LinearLayout messageContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,5 +74,4 @@ public class Messenger extends Fragment {
             }
         });
     }
-    private  LinearLayout messageContainer;
 }

@@ -1,12 +1,15 @@
 package com.KageMegami.personaMessenger;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +22,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static java.util.Collections.singletonMap;
 
@@ -28,26 +38,53 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     public String idToken;
     public static Socket mSocket;
+    public JSONArray friends;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.addAuthStateListener(firebaseAuth -> {
-            if (auth.getCurrentUser() == null) {
+            if (firebaseAuth.getCurrentUser() == null) {
                 createSignInIntent();
                 return;
             }
             firebaseAuth.getCurrentUser().getIdToken(false).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     idToken = task.getResult().getToken();
-                    IO.Options options = IO.Options.builder()
+                     IO.Options options = IO.Options.builder()
                             .setAuth(singletonMap("idToken", idToken))
                             .build();
                     try {
                         mSocket = IO.socket("http://192.168.200.156:3000", options);
                     } catch (URISyntaxException e) {}
                     mSocket.connect();
+
+
+                    new Thread(() -> {
+                        OkHttpClient client = new OkHttpClient().newBuilder()
+                                .build();
+                        Request request = new Request.Builder()
+                                .url("http://192.168.200.156:3000/friends")
+                                .method("GET", null)
+                                .addHeader("Authorization", "Bearer " + idToken)
+                                .build();
+                        try {
+                            Response response = client.newCall(request).execute();
+                            if (response.isSuccessful()) {
+                                friends =  new JSONObject(response.body().string()).getJSONArray("data");
+                            }
+                        } catch (IOException | JSONException e) {
+                        }
+                        runOnUiThread(() -> {
+                            Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                            HomeFragment fragment = (HomeFragment)(navHostFragment.getChildFragmentManager().getFragments().get(0));
+                            fragment.updateList();
+                        });
+                    }).start();
+
+
                 } else {
                 }
             });
