@@ -6,15 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".Messenger">
 
-    <Button
-        android:id="@+id/signout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Signout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/topbar"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/signout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Signout" />
+
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollMessages"
@@ -24,15 +35,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signout">
+        app:layout_constraintTop_toBottomOf="@+id/topbar">
 
         <LinearLayout
             android:id="@+id/messageList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical">
-
-        </LinearLayout>
+            android:orientation="vertical"/>
     </ScrollView>
 
     <EditText
