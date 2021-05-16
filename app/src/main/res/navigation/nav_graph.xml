@@ -3,10 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/messenger">
+    app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/messenger"
         android:name="com.KageMegami.personaMessenger.Messenger"
         android:label="fragment_messenger"
         tools:layout="@layout/fragment_messenger" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.KageMegami.personaMessenger.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_messenger"
+            app:destination="@id/messenger" />
+    </fragment>
 </navigation>
