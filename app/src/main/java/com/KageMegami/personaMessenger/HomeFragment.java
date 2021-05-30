@@ -54,8 +54,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void updateRecyclerView () {
+/*    public void updateRecyclerView () {
         mAdapter.conversations = ((MainActivity) getActivity()).conversations;
         mAdapter.notifyDataSetChanged();
-    }
+    }*/
 }

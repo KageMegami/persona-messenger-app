@@ -14,12 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
 
-    public JSONObject[] conversations;
+    public ArrayList<Conversation> conversations;
     private Fragment fragment;
 
 
@@ -35,7 +34,7 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         }
     }
 
-    public ConvAdapter(JSONObject[] dataSet, Fragment frag) {
+    public ConvAdapter(ArrayList<Conversation> dataSet, Fragment frag) {
         conversations = dataSet;
         fragment = frag;
     }
@@ -49,27 +48,19 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        try {
-            viewHolder.name.setText(conversations[position].getString("name"));
-            Glide.with(fragment).load(conversations[position].getString("photoUrl")).into(viewHolder.image);
-            viewHolder.itemView.setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                try {
-                    bundle.putString("conversation_id", conversations[position].getString("id"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_messenger, bundle);
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        viewHolder.name.setText(conversations.get(position).name);
+        Glide.with(fragment).load(conversations.get(position).photoUrl).into(viewHolder.image);
+        viewHolder.itemView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("conversation_id", conversations.get(position).id);
+            Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_messenger, bundle);
+        });
     }
 
     @Override
     public int getItemCount() {
         if (conversations == null)
             return 0;
-        return conversations.length;
+        return conversations.size();
     }
 }
