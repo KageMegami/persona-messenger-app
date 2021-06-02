@@ -1,6 +1,10 @@
 package com.KageMegami.personaMessenger;
-import io.socket.client.IO;
-import io.socket.client.Socket;
+import adapter.MessageAdapter;
+import entity.Conversation;
+import entity.Message;
+
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,21 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 public class Messenger extends Fragment {
     private String convId;
-    private  Conversation conversation;
+    private Conversation conversation;
     protected RecyclerView mRecyclerView;
     protected MessageAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
@@ -62,6 +63,7 @@ public class Messenger extends Fragment {
 
         //set listener for the back button
         view.findViewById(R.id.back).setOnClickListener(v -> {
+            hideKeyboard(getActivity());
             NavHostFragment.findNavController(this).navigateUp();
         });
 
@@ -72,9 +74,6 @@ public class Messenger extends Fragment {
                 EditText box = ((EditText)view.findViewById(R.id.message));
                 String message = box.getText().toString();
                 box.setText("");
-               /* TextView textView = new TextView(getContext());
-                textView.setText(message);
-                messageContainer.addView(textView);*/
 
                 //send message to server
                 JSONObject newMessage = new JSONObject();
@@ -104,6 +103,7 @@ public class Messenger extends Fragment {
 
         //Set sign out button listener
         view.findViewById(R.id.signout).setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.action_messenger_to_loadingFragment);
             MainActivity act = ((MainActivity)getActivity());
             NavHostFragment.findNavController(this).navigateUp();
             act.signOut();
@@ -112,5 +112,14 @@ public class Messenger extends Fragment {
     public void updateRecyclerView () {
         mAdapter.notifyDataSetChanged();
         mLayoutManager.scrollToPosition(conversation.messages.size() - 1);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

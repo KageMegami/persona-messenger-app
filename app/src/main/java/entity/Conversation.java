@@ -1,9 +1,11 @@
-package com.KageMegami.personaMessenger;
+package entity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+
+import entity.Message;
 
 public class Conversation {
     public String id;
@@ -13,8 +15,6 @@ public class Conversation {
     public boolean isGroup;
     public String[] users;
     public boolean isUptodate = false;
-
-
 
     public Conversation(JSONObject conv) throws JSONException {
         id = conv.getString("id");

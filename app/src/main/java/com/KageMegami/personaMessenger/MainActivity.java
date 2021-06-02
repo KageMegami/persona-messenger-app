@@ -25,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import entity.Conversation;
+import entity.Friend;
+import entity.Message;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import okhttp3.OkHttpClient;
@@ -37,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     public String idToken;
     public static Socket mSocket;
-    public ArrayList<Conversation> conversations;
+    public List<Conversation> conversations;
+    public List<Friend> friendlist = null;
+    //private String url = "http://192.168.200.156:3000";
+    private String url = "https://salty-brushlands-38990.herokuapp.com";
 
 
     @Override
@@ -51,67 +57,120 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             firebaseAuth.getCurrentUser().getIdToken(false).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                     idToken = task.getResult().getToken();
-                     IO.Options options = IO.Options.builder()
-                            .setAuth(singletonMap("idToken", idToken))
+                if (!task.isSuccessful())
+                    return;
+                idToken = task.getResult().getToken();
+                IO.Options options = IO.Options.builder()
+                        .setAuth(singletonMap("idToken", idToken))
+                        .build();
+                try {
+                    mSocket = IO.socket(url, options);
+
+                } catch (URISyntaxException e) {
+                }
+
+                //connect socket and set new_message handler
+                mSocket.connect();
+                mSocket.on("new_message", (message) -> {
+                    try {
+                        String content = ((JSONObject) message[0]).getString("message");
+                        String convId = ((JSONObject) message[0]).getString("convId");
+                        Conversation tmp = getConversation(convId);
+                        if (tmp == null)
+                            return;
+                        if (!MyApplication.isActivityVisible()) {
+                            try {
+                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                r.play();
+                            } catch (Exception e) {
+                            }
+                        }
+                        tmp.messages.add(new Message(content, "aled"));
+                        runOnUiThread(() -> {
+                            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                            Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                            if (frag.getClass() == Messenger.class)
+                                ((Messenger) frag).updateRecyclerView();
+                        });
+                    } catch (JSONException e) {
+                    }
+                });
+
+                // get conversation list from api
+                new Thread(() -> {
+                    OkHttpClient client = new OkHttpClient().newBuilder()
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(url + "/conversations")
+                            .method("GET", null)
+                            .addHeader("Authorization", "Bearer " + idToken)
                             .build();
                     try {
-                        mSocket = IO.socket("http://192.168.200.156:3000", options);
-                    } catch (URISyntaxException e) {}
-                    mSocket.connect();
-                    mSocket.on("new_message", (message) -> {
-                        try {
-                            String content = ((JSONObject)message[0]).getString("message");
-                            String convId = ((JSONObject)message[0]).getString("convId");
-                            Conversation tmp = getConversation(convId);
-                            if (tmp == null)
-                                return;
-                            if (!MyApplication.isActivityVisible()) {
-                                try {
-                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                    r.play();
-                                } catch (Exception e) {}
+                        Response response = client.newCall(request).execute();
+                        if (response.isSuccessful()) {
+                            JSONArray convs = new JSONObject(response.body().string()).getJSONArray("data");
+                            for (int i = 0; i < convs.length(); i += 1) {
+                                conversations.add(new Conversation(convs.getJSONObject(i)));
                             }
-                            tmp.messages.add(new Message(content, "aled"));
-                            runOnUiThread(() -> {
-                                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                                Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
-                                if (frag.getClass() == Messenger.class)
-                                    ((Messenger) frag).updateRecyclerView();
-                            });
-                        } catch (JSONException e) {}
+                        }
+                    } catch (IOException | JSONException e) {}
+                    while (friendlist == null) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {}
+                    }
+                    // notify ui data are ready
+                    runOnUiThread(() -> {
+                        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                        navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_homeFragment);
                     });
 
-                    new Thread(() -> {
-                        OkHttpClient client = new OkHttpClient().newBuilder()
-                                .build();
-                        Request request = new Request.Builder()
-                                .url("http://192.168.200.156:3000/conversations")
-                                .method("GET", null)
-                                .addHeader("Authorization", "Bearer " + idToken)
-                                .build();
-                        try {
-                            Response response = client.newCall(request).execute();
-                            if (response.isSuccessful()) {
-                                JSONArray convs = new JSONObject(response.body().string()).getJSONArray("data");
-                                for (int i = 0; i < convs.length(); i += 1) {
-                                    conversations.add(new Conversation(convs.getJSONObject(i)));
+                    //fetch message for all conversations
+                    conversations.forEach(conversation -> {
+                        new Thread(() -> {
+                            OkHttpClient clientConv = new OkHttpClient().newBuilder()
+                                    .build();
+                            Request requestConv = new Request.Builder()
+                                    .url(url + "/conversations/" + conversation.id + "/messages")
+                                    .method("GET", null)
+                                    .addHeader("Authorization", "Bearer " + idToken)
+                                    .build();
+                            try {
+                                Response response = clientConv.newCall(requestConv).execute();
+                                if (response.isSuccessful()) {
+                                    JSONArray messages = new JSONObject(response.body().string()).getJSONArray("data");
+                                    for (int i = 0; i < messages.length(); i += 1) {
+                                        JSONObject tmp = messages.getJSONObject(i);
+                                        conversation.messages.add(new Message(tmp.getString("messageContent"), tmp.getString("sender"), tmp.getJSONObject("date")));
+                                    }
                                 }
+                            } catch (IOException | JSONException e) {}
+                        }).start();
+                    });
+                }).start();
+
+                // get friend list from api
+                new Thread(() -> {
+                    OkHttpClient client = new OkHttpClient().newBuilder()
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(url + "/friends")
+                            .method("GET", null)
+                            .addHeader("Authorization", "Bearer " + idToken)
+                            .build();
+                    try {
+                        Response response = client.newCall(request).execute();
+                        if (response.isSuccessful()) {
+                            friendlist = new ArrayList<>();
+                            JSONArray friends = new JSONObject(response.body().string()).getJSONArray("data");
+                            for (int i = 0; i < friends.length(); i += 1) {
+                                friendlist.add(new Friend(friends.getJSONObject(i)));
                             }
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
                         }
-                        runOnUiThread(() -> {
-                            NavHostFragment navHostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                            navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_homeFragment);
-                        });
-                    }).start();
-
-
-                } else {
-                }
+                    } catch (IOException | JSONException e) {
+                    }
+                }).start();
             });
         });
         if (auth.getCurrentUser() == null)
@@ -132,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() {
+        conversations.clear();
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
