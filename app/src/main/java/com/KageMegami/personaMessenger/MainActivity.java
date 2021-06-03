@@ -192,23 +192,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void signOut() {
         conversations.clear();
+        friendlist.clear();
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        mSocket.disconnect();
-                    }
-                });
+                .addOnCompleteListener(task -> mSocket.disconnect());
     }
 
     public void delete() {
         AuthUI.getInstance()
                 .delete(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
+                .addOnCompleteListener(task -> {
+                    // ...
                 });
     }
     public Conversation getConversation(String convId) {

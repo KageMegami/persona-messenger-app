@@ -13,25 +13,36 @@
         android:layout_height="wrap_content"
         android:background="#00FFFFFF">
 
+        <ImageView
+            android:id="@+id/bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/cadre"
+            android:layout_marginStart="-23dp"
+            app:srcCompat="@drawable/conv_buble" />
+
         <TextView
             android:id="@+id/message"
-            android:layout_width="match_parent"
+            android:layout_width="194dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="17dp"
+            android:layout_marginStart="37dp"
+            android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/cadre"
-            android:text="Tmp" />
+            android:fontFamily="@font/persona"
+            android:textSize="12dp"
+            android:text="Ceci est le dernier mess..." />
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="match_parent"
+            android:layout_width="185dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="14dp"
-            android:layout_toEndOf="@+id/cadre"
-            android:text="TextView" />
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="23dp"
+            android:fontFamily="@font/persona"
+            android:textSize="14dp"
+            android:layout_toEndOf="@+id/cadre"/>
 
         <ImageView
             android:id="@+id/conversationImage"

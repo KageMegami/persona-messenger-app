@@ -16,7 +16,8 @@
         app:layout_constraintEnd_toEndOf="@id/botomBar"
         app:layout_constraintHorizontal_bias="0.094"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@+id/page_title" />
 
     <fragment
         android:id="@+id/botomBar"
@@ -29,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/page_title"
         android:layout_width="208dp"
         android:layout_height="75dp"
         android:layout_marginTop="12dp"
@@ -38,5 +39,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/chats_title" />
+
+    <ImageView
+        android:id="@+id/logout"
+        android:layout_width="39dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

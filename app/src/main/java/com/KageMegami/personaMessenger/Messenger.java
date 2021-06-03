@@ -92,13 +92,6 @@ public class Messenger extends Fragment {
         view.findViewById(R.id.message).setOnClickListener(v -> mRecyclerView.postDelayed(
                 () -> mRecyclerView.scrollToPosition(conversation.messages.size() - 1), 200));
 
-        //Set sign out button listener
-    /*    view.findViewById(R.id.signout).setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(R.id.action_messenger_to_loadingFragment);
-            MainActivity act = ((MainActivity)getActivity());
-            NavHostFragment.findNavController(this).navigateUp();
-            act.signOut();
-        });*/
     }
     public void updateRecyclerView () {
         mAdapter.notifyDataSetChanged();

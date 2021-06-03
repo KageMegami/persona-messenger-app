@@ -8,13 +8,7 @@
         android:id="@+id/messenger"
         android:name="com.KageMegami.personaMessenger.Messenger"
         android:label="fragment_messenger"
-        tools:layout="@layout/fragment_messenger" >
-        <action
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"
-            android:id="@+id/action_messenger_to_loadingFragment"
-            app:destination="@id/loadingFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_messenger" />
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.KageMegami.personaMessenger.HomeFragment"
@@ -28,6 +22,11 @@
             app:popUpToInclusive="true"
             android:id="@+id/action_homeFragment_to_friendsFragment"
             app:destination="@id/friendsFragment" />
+        <action
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_homeFragment_to_loadingFragment"
+            app:destination="@id/loadingFragment" />
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"
