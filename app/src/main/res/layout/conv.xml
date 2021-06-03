@@ -8,30 +8,57 @@
     tools:layout_editor_absoluteX="84dp"
     tools:layout_editor_absoluteY="227dp">
 
-    <ImageView
-        android:id="@+id/conversationImage"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:background="#00FFFFFF">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/bubble"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_toEndOf="@+id/cadre"
+            android:layout_marginStart="-23dp"
+            app:srcCompat="@drawable/conv_buble" />
 
         <TextView
             android:id="@+id/message"
-            android:layout_width="match_parent"
+            android:layout_width="194dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Tmp" />
-    </LinearLayout>
+            android:layout_below="@+id/name"
+            android:layout_marginStart="37dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/cadre"
+            android:fontFamily="@font/persona"
+            android:textSize="12dp"
+            android:text="Ceci est le dernier mess..." />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="185dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="23dp"
+            android:fontFamily="@font/persona"
+            android:textSize="14dp"
+            android:layout_toEndOf="@+id/cadre"/>
+
+        <ImageView
+            android:id="@+id/conversationImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignEnd="@+id/cadre"
+            android:layout_alignBottom="@+id/cadre"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="14dp"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/cadre"
+            android:layout_width="100dp"
+            android:layout_height="85dp"
+            app:srcCompat="@drawable/cadre" />
+    </RelativeLayout>
+
 </LinearLayout>

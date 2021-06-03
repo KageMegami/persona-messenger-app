@@ -57,11 +57,15 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Conversation conv = conversations.get(position);
-        viewHolder.name.setText(conv.name);
         if (!conv.isGroup) {
-            Glide.with(fragment).load(getFriendUrl(conv)).into(viewHolder.image);
+            Friend friend = getFriend(conv);
+            if (friend == null)
+                return;
+            Glide.with(fragment).load(friend.photoUrl).into(viewHolder.image);
+            viewHolder.name.setText(friend.name);
         } else {
             Glide.with(fragment).load(conv.photoUrl).into(viewHolder.image);
+            viewHolder.name.setText(conv.name);
         }
         viewHolder.itemView.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -77,12 +81,12 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         return conversations.size();
     }
 
-    public String getFriendUrl(Conversation conv) {
+    public Friend getFriend(Conversation conv) {
         String friendId = conv.users[0].equals(uid) ? conv.users[1] : conv.users[0];
         for (int i = 0; i < users.size(); i += 1) {
             if (users.get(i).id.equals(friendId))
-                return users.get(i).photoUrl;
+                return users.get(i);
         }
-        return "http://romanroadtrust.co.uk/wp-content/uploads/2018/01/profile-icon-png-898.png";
+        return null;
     }
 }

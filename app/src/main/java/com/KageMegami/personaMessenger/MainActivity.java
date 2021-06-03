@@ -1,12 +1,17 @@
 package com.KageMegami.personaMessenger;
 
+import android.Manifest;
+import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -20,6 +25,9 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,25 +46,33 @@ import static java.util.Collections.singletonMap;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
+    public static Context contextOfApplication;
     public String idToken;
     public static Socket mSocket;
     public List<Conversation> conversations;
     public List<Friend> friendlist = null;
-    //private String url = "http://192.168.200.156:3000";
-    private String url = "https://salty-brushlands-38990.herokuapp.com";
-
+    FirebaseAuth auth;
+    FirebaseStorage storage;
+    private String url = "http://192.168.200.156:3000";
+    //private String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        contextOfApplication = getApplicationContext();
         conversations = new ArrayList<>();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
         auth.addAuthStateListener(firebaseAuth -> {
             if (firebaseAuth.getCurrentUser() == null) {
                 createSignInIntent();
                 return;
             }
-            firebaseAuth.getCurrentUser().getIdToken(false).addOnCompleteListener(task -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            /*String name = user.getDisplayName();
+            String email = user.getEmail();
+            Uri  photoUrl = user.getPhotoUrl();*/
+            user.getIdToken(false).addOnCompleteListener(task -> {
                 if (!task.isSuccessful())
                     return;
                 idToken = task.getResult().getToken();
@@ -178,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+
+
     public void createSignInIntent() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -192,23 +210,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void signOut() {
         conversations.clear();
+        friendlist.clear();
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        mSocket.disconnect();
-                    }
-                });
+                .addOnCompleteListener(task -> mSocket.disconnect());
     }
 
     public void delete() {
         AuthUI.getInstance()
                 .delete(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
+                .addOnCompleteListener(task -> {
+                    // ...
                 });
     }
     public Conversation getConversation(String convId) {
@@ -230,5 +242,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         MyApplication.activityPaused();
+    }
+
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
     }
 }
