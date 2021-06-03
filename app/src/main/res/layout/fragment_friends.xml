@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toTopOf="@+id/botomBar"
         app:layout_constraintEnd_toEndOf="@id/botomBar"
         app:layout_constraintHorizontal_bias="0.094"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <fragment
         android:id="@+id/botomBar"
@@ -27,16 +29,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="208dp"
-        android:layout_height="75dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.349"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chats_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

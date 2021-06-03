@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +26,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -36,6 +37,12 @@ public class HomeFragment extends Fragment {
         mAdapter = new ConvAdapter(((MainActivity)getActivity()).conversations, ((MainActivity)getActivity()).friendlist, this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+
+        //set bottom bar action
+        BottomBarFragment bottom = (BottomBarFragment)getChildFragmentManager().getFragments().get(0);
+        bottom.getView().findViewById(R.id.friends).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_friendsFragment);
+        });
         return rootView;
     }
 
@@ -43,9 +50,4 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
-/*    public void updateRecyclerView () {
-        mAdapter.conversations = ((MainActivity) getActivity()).conversations;
-        mAdapter.notifyDataSetChanged();
-    }*/
 }

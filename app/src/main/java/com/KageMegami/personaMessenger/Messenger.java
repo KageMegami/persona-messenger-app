@@ -62,10 +62,10 @@ public class Messenger extends Fragment {
        // messageContainer = view.findViewById(R.id.messageList);
 
         //set listener for the back button
-        view.findViewById(R.id.back).setOnClickListener(v -> {
+ /*       view.findViewById(R.id.back).setOnClickListener(v -> {
             hideKeyboard(getActivity());
             NavHostFragment.findNavController(this).navigateUp();
-        });
+        });*/
 
         //set listener for the send button
         view.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
@@ -89,25 +89,16 @@ public class Messenger extends Fragment {
         });
 
         //Set type box button listener to scroll up messages
-        view.findViewById(R.id.message).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.scrollToPosition(conversation.messages.size() - 1);
-                    }
-                }, 200);
-            }
-        });
+        view.findViewById(R.id.message).setOnClickListener(v -> mRecyclerView.postDelayed(
+                () -> mRecyclerView.scrollToPosition(conversation.messages.size() - 1), 200));
 
         //Set sign out button listener
-        view.findViewById(R.id.signout).setOnClickListener(v -> {
+    /*    view.findViewById(R.id.signout).setOnClickListener(v -> {
             Navigation.findNavController(view).navigate(R.id.action_messenger_to_loadingFragment);
             MainActivity act = ((MainActivity)getActivity());
             NavHostFragment.findNavController(this).navigateUp();
             act.signOut();
-        });
+        });*/
     }
     public void updateRecyclerView () {
         mAdapter.notifyDataSetChanged();
