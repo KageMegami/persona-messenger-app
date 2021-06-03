@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public List<Friend> friendlist = null;
     FirebaseAuth auth;
     FirebaseStorage storage;
-    private String url = "http://192.168.200.156:3000";
-    //private String url = "https://salty-brushlands-38990.herokuapp.com";
+    //private String url = "http://192.168.200.156:3000";
+    private String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
