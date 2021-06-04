@@ -1,5 +1,6 @@
 package adapter;
 
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import entity.Message;
 import com.KageMegami.personaMessenger.R;
 
+import java.nio.file.attribute.AttributeView;
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
@@ -19,11 +22,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView content;
+        public View view;
+        //public TextView content;
+
 
         public ViewHolder(View view) {
             super(view);
-            content = view.findViewById(R.id.content);
+            this.view = view.findViewById(R.id.empty);
+            //content = view.findViewById(R.id.content);
         }
     }
 
@@ -41,7 +47,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.content.setText(messages.get(position).message);
+        ViewGroup viewGroup = (ViewGroup)viewHolder.view.getParent();
+        viewGroup.removeAllViews();
+        viewHolder.view = new View(viewGroup.getContext());
+        viewHolder.view.inflate(viewGroup.getContext(), R.layout.test, viewGroup);
+        //viewHolder.view.inflate(viewGroup.getContext(), R.layout.test2, viewGroup);
+        viewGroup.addView(viewHolder.view);
+        ((TextView)viewGroup.findViewById(R.id.text)).setText(messages.get(position).message);
     }
 
     @Override
