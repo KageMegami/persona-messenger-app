@@ -33,11 +33,12 @@
         android:id="@+id/page_title"
         android:layout_width="208dp"
         android:layout_height="75dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.349"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:rotation="-5"
         app:srcCompat="@drawable/chats_title" />
 
     <ImageView
