@@ -39,28 +39,30 @@ import entity.Friend;
 import entity.Message;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
 
 import static java.util.Collections.singletonMap;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
-    public static Context contextOfApplication;
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public String idToken;
     public static Socket mSocket;
     public List<Conversation> conversations;
     public List<Friend> friendlist = null;
     FirebaseAuth auth;
     FirebaseStorage storage;
-    //private String url = "http://192.168.200.156:3000";
-    private String url = "https://salty-brushlands-38990.herokuapp.com";
+    private String url = "http://192.168.200.156:3000";
+    //private String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        contextOfApplication = getApplicationContext();
         conversations = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -87,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 mSocket.connect();
                 mSocket.on("new_message", (message) -> {
                     try {
-                        String content = ((JSONObject) message[0]).getString("message");
-                        String convId = ((JSONObject) message[0]).getString("convId");
+                        String content = ((JSONObject)message[0]).getString("message");
+                        String convId = ((JSONObject)message[0]).getString("convId");
+                        String sender = ((JSONObject)message[0]).getString("sender");
                         Conversation tmp = getConversation(convId);
                         if (tmp == null)
                             return;
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                             } catch (Exception e) {
                             }
                         }
-                        tmp.messages.add(new Message(content, "aled"));
+                        tmp.messages.add(new Message(content, sender));
                         runOnUiThread(() -> {
                             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
                             Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
@@ -111,14 +114,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 FirebaseUserMetadata metadata = user.getMetadata();
-               // if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+                long creation = metadata.getCreationTimestamp();
+                long last = metadata.getLastSignInTimestamp();
+                if (creation == last) {
                     //Welcome new user for the first time
-                    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                    navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
-               /* } else {
+                    newUser(user);
+                } else {
                     //known user
                     loadData();
-                }*/
+                }
             });
         });
         if (auth.getCurrentUser() == null)
@@ -126,7 +130,60 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void newUser(FirebaseUser user) {
+        new Thread(() -> {
+            JSONObject bodyjson = new JSONObject();
+            try {
+                bodyjson.put("uid", user.getUid());
+                bodyjson.put("name", user.getDisplayName());
+                if (user.getPhotoUrl() != null)
+                    bodyjson.put("photoUrl", user.getPhotoUrl());
+                else
+                    bodyjson.put("photoUrl", "https://i1.sndcdn.com/artworks-000023237585-jphshz-t500x500.jpg");
+
+            } catch (JSONException e) { return; }
+            RequestBody body = RequestBody.create(JSON, bodyjson.toString());
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            Request request = new Request.Builder()
+                    .url(url + "/users")
+                    .post(body)
+                    .addHeader("Authorization", "Bearer " + idToken)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+            } catch (IOException e) {}
+            runOnUiThread(()-> {
+                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
+            });
+        }).start();
+    }
+
     public void loadData(){
+        // get friend list from api
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            Request request = new Request.Builder()
+                    .url(url + "/friends")
+                    .method("GET", null)
+                    .addHeader("Authorization", "Bearer " + idToken)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                friendlist = new ArrayList<>();
+                if (response.isSuccessful()) {
+                    JSONArray friends = new JSONObject(response.body().string()).getJSONArray("data");
+                    for (int i = 0; i < friends.length(); i += 1) {
+                        friendlist.add(new Friend(friends.getJSONObject(i)));
+                    }
+                }
+            } catch (IOException | JSONException e) {
+                friendlist = new ArrayList<>();
+            }
+        }).start();
+
         // get conversation list from api
         new Thread(() -> {
             OkHttpClient client = new OkHttpClient().newBuilder()
@@ -145,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch (IOException | JSONException e) {}
-            while (friendlist == null) {
+           /* while (friendlist == null) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {}
-            }
+            }*/
             // notify ui data are ready
             runOnUiThread(() -> {
                 NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
@@ -178,28 +235,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException | JSONException e) {}
                 }).start();
             });
-        }).start();
-
-        // get friend list from api
-        new Thread(() -> {
-            OkHttpClient client = new OkHttpClient().newBuilder()
-                    .build();
-            Request request = new Request.Builder()
-                    .url(url + "/friends")
-                    .method("GET", null)
-                    .addHeader("Authorization", "Bearer " + idToken)
-                    .build();
-            try {
-                Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    friendlist = new ArrayList<>();
-                    JSONArray friends = new JSONObject(response.body().string()).getJSONArray("data");
-                    for (int i = 0; i < friends.length(); i += 1) {
-                        friendlist.add(new Friend(friends.getJSONObject(i)));
-                    }
-                }
-            } catch (IOException | JSONException e) {
-            }
         }).start();
     }
 
@@ -251,10 +286,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         MyApplication.activityPaused();
-    }
-
-    public static Context getContextOfApplication()
-    {
-        return contextOfApplication;
     }
 }
