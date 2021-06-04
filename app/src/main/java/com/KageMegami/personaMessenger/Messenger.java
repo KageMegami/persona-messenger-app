@@ -27,6 +27,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+
 public class Messenger extends Fragment {
     private String convId;
     private Conversation conversation;
@@ -79,7 +83,13 @@ public class Messenger extends Fragment {
                 JSONObject newMessage = new JSONObject();
                 try {
                     newMessage.put("convId", convId);
+                    newMessage.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     newMessage.put("message", message);
+                    JSONObject date = new JSONObject();
+                    date.put("_seconds", System.currentTimeMillis() / 1000);
+                    newMessage.put("message", message);
+                    newMessage.put("date", date);
+
                 } catch (JSONException e) {}
                 MainActivity.mSocket.emit("new_message", newMessage);
                 conversation.messages.add(new Message(message, FirebaseAuth.getInstance().getCurrentUser().getUid()));

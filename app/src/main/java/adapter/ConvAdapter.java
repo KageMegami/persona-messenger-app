@@ -35,7 +35,7 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
-            image = view.findViewById(R.id.conversationImage);
+            image = view.findViewById(R.id.conversation_image);
 
         }
     }

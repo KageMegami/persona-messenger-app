@@ -45,7 +45,7 @@
             android:layout_toEndOf="@+id/cadre"/>
 
         <ImageView
-            android:id="@+id/conversationImage"
+            android:id="@+id/conversation_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignEnd="@+id/cadre"
