@@ -24,14 +24,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public View view;
-        //public TextView content;
-
+        public View content;
+        public View link;
 
         public ViewHolder(View view) {
             super(view);
-            this.view = view.findViewById(R.id.empty);
-            //content = view.findViewById(R.id.content);
+            this.content = view.findViewById(R.id.content);
+            this.link = view.findViewById(R.id.link);
         }
     }
 
@@ -50,27 +49,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Message message = messages.get(position);
-        ViewGroup viewGroup = (ViewGroup)viewHolder.view.getParent();
+        int newPosition = messages.size() - position - 1;
+        Message message = messages.get(newPosition);
+        ViewGroup viewGroup = (ViewGroup)viewHolder.content.getParent();
         viewGroup.removeAllViews();
-        viewHolder.view = new View(viewGroup.getContext());
+        viewHolder.link = new View(viewGroup.getContext());
+        viewHolder.content = new View(viewGroup.getContext());
+
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (message.senderId.equals(uid)) {
-            if (message.message.length() <= 6)
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.small_message_right, viewGroup);
-            else if (message.message.length() <= 20)
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.medium_message_right, viewGroup);
-            else
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.long_message_right, viewGroup);
-        } else {
-            if (message.message.length() <= 5)
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.small_message_left, viewGroup);
-            else if (message.message.length() <= 17)
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.medium_message_left, viewGroup);
-            else
-                viewHolder.view.inflate(viewGroup.getContext(), R.layout.long_message_left, viewGroup);
-        }
-        viewGroup.addView(viewHolder.view);
+
+        //add link
+        viewHolder.link.inflate(viewGroup.getContext(), R.layout.link, viewGroup);
+        viewGroup.addView(viewHolder.link);
+        ImageView link = ((ImageView)viewGroup.findViewById(R.id.link));
+        Glide.with(fragment).load(getLink(message, uid, newPosition)).into(link);
+
+
+        viewHolder.content.inflate(viewGroup.getContext(), selectMessageLayout(message, uid), viewGroup);
+
+        viewGroup.addView(viewHolder.content);
         ((TextView)viewGroup.findViewById(R.id.text)).setText(message.message);
         if (message.senderId.equals(uid))
                 return;
@@ -86,6 +83,45 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (messages == null)
             return 0;
         return messages.size();
+    }
+
+
+    public int selectMessageLayout(Message message, String uid) {
+        if (message.senderId.equals(uid)) {
+            if (message.message.length() <= 6)
+                return R.layout.small_message_right;
+            if (message.message.length() <= 20)
+                return R.layout.medium_message_right;
+            return R.layout.long_message_right;
+         }
+        if (message.message.length() <= 5)
+           return R.layout.small_message_left;
+        if (message.message.length() <= 17)
+            return R.layout.medium_message_left;
+        return R.layout.long_message_left;
+    }
+
+    public int getLink(Message message, String uid, int position) {
+        if (position == 0) {
+            //tmp
+            if (message.senderId.equals(uid))
+                return R.drawable.link_left_to_right;
+            return R.drawable.link_right_to_left;
+        }
+        Message prev = messages.get(position - 1);
+        if (message.senderId.equals(uid) && !prev.senderId.equals(uid))
+            return R.drawable.link_left_to_right;
+        if (!message.senderId.equals(uid) && prev.senderId.equals(uid))
+            return  R.drawable.link_right_to_left;
+        if (!message.senderId.equals(uid) && !prev.senderId.equals(uid)){
+            if (position % 2 == 0)
+                return R.drawable.link_left3;
+            return R.drawable.link_left2;
+        }
+        // mort a link_left2
+        if (position % 2 == 0)
+            return R.drawable.link_right1;
+        return R.drawable.link_right2;
     }
 
     public String getUrl(String uid) {

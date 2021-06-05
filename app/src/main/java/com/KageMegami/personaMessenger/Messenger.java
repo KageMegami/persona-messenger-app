@@ -1,4 +1,5 @@
 package com.KageMegami.personaMessenger;
+import adapter.ItemDecorator;
 import adapter.MessageAdapter;
 import entity.Conversation;
 import entity.Message;
@@ -36,7 +37,7 @@ public class Messenger extends Fragment {
     private Conversation conversation;
     protected RecyclerView mRecyclerView;
     protected MessageAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
+    protected LinearLayoutManager mLayoutManager;
 
     private  LinearLayout messageContainer;
 
@@ -54,8 +55,12 @@ public class Messenger extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_messenger, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         mAdapter = new MessageAdapter(conversation.messages, ((MainActivity)getActivity()).friendlist, this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addItemDecoration(new ItemDecorator(-120));
         mRecyclerView.setAdapter(mAdapter);
         return rootView;
     }
@@ -63,7 +68,8 @@ public class Messenger extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView.scrollToPosition(conversation.messages.size() - 1);
+        mRecyclerView.scrollToPosition(0);
+
        // messageContainer = view.findViewById(R.id.messageList);
 
         //set listener for the back button
@@ -97,18 +103,18 @@ public class Messenger extends Fragment {
                 MainActivity.mSocket.emit("new_message", newMessage);
                 conversation.messages.add(new Message(message, FirebaseAuth.getInstance().getCurrentUser().getUid()));
                 mAdapter.notifyDataSetChanged();
-                mLayoutManager.scrollToPosition(conversation.messages.size() - 1);
+                mLayoutManager.scrollToPosition(0);
             }
         });
 
         //Set type box button listener to scroll up messages
         view.findViewById(R.id.message).setOnClickListener(v -> mRecyclerView.postDelayed(
-                () -> mRecyclerView.scrollToPosition(conversation.messages.size() - 1), 200));
+                () -> mRecyclerView.scrollToPosition(0), 200));
 
     }
     public void updateRecyclerView () {
         mAdapter.notifyDataSetChanged();
-        mLayoutManager.scrollToPosition(conversation.messages.size() - 1);
+        mLayoutManager.scrollToPosition(0);
     }
 
     public static void hideKeyboard(Activity activity) {

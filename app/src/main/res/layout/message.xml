@@ -5,7 +5,12 @@
     android:layout_height="wrap_content">
 
     <View
-        android:id="@+id/empty"
+        android:id="@+id/link"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+    </View>
+    <View
+        android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="0dp">
     </View>

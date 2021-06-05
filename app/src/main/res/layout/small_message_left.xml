@@ -20,7 +20,7 @@
         android:id="@+id/cadre"
         android:layout_width="85dp"
         android:layout_height="65dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="100dp"
         android:layout_alignParentTop="true"
         app:srcCompat="@drawable/cadre" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="57dp"
         android:layout_marginStart="-25dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="100dp"
         android:layout_toEndOf="@+id/cadre"
         app:srcCompat="@drawable/small_left" />
 
