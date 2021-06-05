@@ -54,7 +54,7 @@ public class Messenger extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_messenger, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new MessageAdapter(conversation.messages, this);
+        mAdapter = new MessageAdapter(conversation.messages, ((MainActivity)getActivity()).friendlist, this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         return rootView;
@@ -63,6 +63,7 @@ public class Messenger extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mRecyclerView.scrollToPosition(conversation.messages.size() - 1);
        // messageContainer = view.findViewById(R.id.messageList);
 
         //set listener for the back button

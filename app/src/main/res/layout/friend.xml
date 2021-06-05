@@ -7,6 +7,26 @@
     android:layout_height="wrap_content"
     android:background="#00FFFFFF">
 
+
+
+    <ImageView
+        android:id="@+id/friend_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleY="1.13"
+        android:scaleX="1.13"
+        android:layout_alignEnd="@+id/cadre"
+        android:layout_alignBottom="@+id/cadre"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="14dp"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/cadre"
+        android:layout_width="100dp"
+        android:layout_height="85dp"
+        app:srcCompat="@drawable/cadre" />
+
     <ImageView
         android:id="@+id/bubble"
         android:layout_width="wrap_content"
@@ -17,28 +37,14 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
+        android:layout_width="191dp"
+        android:layout_height="33dp"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="26dp"
+        android:layout_toEndOf="@+id/cadre"
         android:fontFamily="@font/persona"
-        android:textSize="14dp"
-        android:layout_toEndOf="@+id/cadre"/>
-
-    <ImageView
-        android:id="@+id/conversation_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignEnd="@+id/cadre"
-        android:layout_alignBottom="@+id/cadre"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="14dp"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-    <ImageView
-        android:id="@+id/cadre"
-        android:layout_width="100dp"
-        android:layout_height="85dp"
-        app:srcCompat="@drawable/cadre" />
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="14dp" />
 </RelativeLayout>

@@ -1,23 +1,25 @@
 package adapter;
 
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import entity.Friend;
 import entity.Message;
 import com.KageMegami.personaMessenger.R;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
-import java.nio.file.attribute.AttributeView;
-import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    public ArrayList<Message> messages;
+    public List<Message> messages;
+    public List<Friend> friends;
     private Fragment fragment;
 
 
@@ -33,9 +35,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    public MessageAdapter(ArrayList<Message> dataSet, Fragment frag) {
+    public MessageAdapter(List<Message> dataSet, List<Friend> friends, Fragment frag) {
         messages = dataSet;
         fragment = frag;
+        this.friends = friends;
     }
 
     @Override
@@ -47,13 +50,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        Message message = messages.get(position);
         ViewGroup viewGroup = (ViewGroup)viewHolder.view.getParent();
         viewGroup.removeAllViews();
         viewHolder.view = new View(viewGroup.getContext());
-        viewHolder.view.inflate(viewGroup.getContext(), R.layout.test, viewGroup);
-        //viewHolder.view.inflate(viewGroup.getContext(), R.layout.test2, viewGroup);
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (message.senderId.equals(uid)) {
+            if (message.message.length() <= 6)
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.small_message_right, viewGroup);
+            else if (message.message.length() <= 20)
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.medium_message_right, viewGroup);
+            else
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.long_message_right, viewGroup);
+        } else {
+            if (message.message.length() <= 5)
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.small_message_left, viewGroup);
+            else if (message.message.length() <= 17)
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.medium_message_left, viewGroup);
+            else
+                viewHolder.view.inflate(viewGroup.getContext(), R.layout.long_message_left, viewGroup);
+        }
         viewGroup.addView(viewHolder.view);
-        ((TextView)viewGroup.findViewById(R.id.text)).setText(messages.get(position).message);
+        ((TextView)viewGroup.findViewById(R.id.text)).setText(message.message);
+        if (message.senderId.equals(uid))
+                return;
+        String photoUrl = getUrl(message.senderId);
+        if (photoUrl == null)
+            return;
+        ImageView avatar = ((ImageView)viewGroup.findViewById(R.id.avatar));
+        Glide.with(fragment).load(photoUrl).into(avatar);
     }
 
     @Override
@@ -62,5 +87,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return 0;
         return messages.size();
     }
+
+    public String getUrl(String uid) {
+        for (int i = 0; i < friends.size(); i += 1) {
+            if (friends.get(i).id.equals(uid))
+                return friends.get(i).photoUrl;
+        }
+        return null;
+    }
+
 }
 
