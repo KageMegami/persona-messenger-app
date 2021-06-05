@@ -78,6 +78,8 @@ public class Messenger extends Fragment {
             public void onClick(View v) {
                 EditText box = ((EditText)view.findViewById(R.id.message));
                 String message = box.getText().toString();
+                if (message.length() == 0)
+                        return;
                 box.setText("");
 
                 //send message to server
