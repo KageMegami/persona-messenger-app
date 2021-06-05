@@ -7,8 +7,10 @@
     android:layout_height="wrap_content"
     android:background="#00FFFFFF">
 
+
+
     <ImageView
-        android:id="@+id/conversation_image"
+        android:id="@+id/friend_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleY="1.13"
@@ -35,27 +37,14 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
+        android:layout_width="191dp"
+        android:layout_height="33dp"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="23dp"
-        android:fontFamily="@font/persona"
-        android:textColor="@color/black"
-        android:textSize="14dp"
-        android:layout_toEndOf="@+id/cadre"/>
-
-    <TextView
-        android:id="@+id/message"
-        android:textColor="@color/black"
-        android:layout_width="194dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="26dp"
         android:layout_toEndOf="@+id/cadre"
         android:fontFamily="@font/persona"
-        android:textSize="12dp"
-        android:text="Ceci est le dernier mess..." />
-
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="14dp" />
 </RelativeLayout>
