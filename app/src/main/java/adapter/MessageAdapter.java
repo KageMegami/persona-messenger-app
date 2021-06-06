@@ -72,12 +72,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         if (newPosition == 0) {
             if (message.senderId.equals(uid)) {
-                setMargins(viewGroup.findViewById(R.id.bubble), 0, 690, 0, 0);
-                setMargins(link, 0, 180, 0, 0);
+                setMargins(viewGroup.findViewById(R.id.bubble), 0, 640, 0, 0);
+                setMargins(link, 0, 130, 0, 0);
             }
             else {
-                setMargins(viewGroup.findViewById(R.id.cadre), 0, 690, 0, 0);
-                setMargins(link,0, 180, 0, 0);
+                setMargins(viewGroup.findViewById(R.id.cadre), 0, 640, 0, 0);
+                setMargins(link,0, 130, 0, 0);
             }
             ViewGroup.LayoutParams layoutParams = link. getLayoutParams();
             layoutParams.height = 650;

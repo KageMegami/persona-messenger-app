@@ -23,7 +23,7 @@
         android:layout_alignTop="@+id/bubble"
         android:layout_alignEnd="@+id/bubble"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="39dp"
         android:fontFamily="@font/persona"
         android:gravity="center_vertical|end"
