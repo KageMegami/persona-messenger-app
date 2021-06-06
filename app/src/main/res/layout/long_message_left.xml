@@ -35,11 +35,11 @@
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="229dp"
-        android:layout_height="27dp"
+        android:layout_width="248dp"
+        android:layout_height="26dp"
         android:layout_alignStart="@id/bubble"
         android:layout_alignTop="@+id/bubble"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="39dp"
         android:layout_marginTop="11dp"
         android:fontFamily="@font/persona"
         android:gravity="center_vertical|start"

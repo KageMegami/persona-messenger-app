@@ -18,12 +18,13 @@
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="157dp"
-        android:layout_height="31dp"
+        android:layout_width="165dp"
+        android:layout_height="33dp"
         android:layout_alignTop="@+id/bubble"
         android:layout_alignEnd="@+id/bubble"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="52dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         android:fontFamily="@font/persona"
         android:gravity="center_vertical|right"
         android:maxLines="2"
