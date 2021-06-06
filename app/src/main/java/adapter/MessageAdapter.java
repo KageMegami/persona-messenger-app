@@ -88,15 +88,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public int selectMessageLayout(Message message, String uid) {
         if (message.senderId.equals(uid)) {
-            if (message.message.length() <= 6)
+            if (message.message.length() <= 7)
                 return R.layout.small_message_right;
-            if (message.message.length() <= 20)
+            if (message.message.length() <= 18)
                 return R.layout.medium_message_right;
             return R.layout.long_message_right;
          }
-        if (message.message.length() <= 5)
+        if (message.message.length() <= 7)
            return R.layout.small_message_left;
-        if (message.message.length() <= 17)
+        if (message.message.length() <= 18)
             return R.layout.medium_message_left;
         return R.layout.long_message_left;
     }
