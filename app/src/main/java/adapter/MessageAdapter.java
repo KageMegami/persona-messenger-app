@@ -61,20 +61,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         //add link
         viewHolder.link.inflate(viewGroup.getContext(), R.layout.link, viewGroup);
         viewGroup.addView(viewHolder.link);
-        ImageView link = ((ImageView)viewGroup.findViewById(R.id.link));
+        ImageView link = viewGroup.findViewById(R.id.link);
         Glide.with(fragment).load(getLink(message, uid, newPosition)).into(link);
 
 
+        //add bubble
         viewHolder.content.inflate(viewGroup.getContext(), selectMessageLayout(message, uid), viewGroup);
-
         viewGroup.addView(viewHolder.content);
         ((TextView)viewGroup.findViewById(R.id.text)).setText(message.message);
+
+        if (newPosition == 0) {
+            if (message.senderId.equals(uid)) {
+                setMargins(viewGroup.findViewById(R.id.bubble), 0, 690, 0, 0);
+                setMargins(link, 0, 180, 0, 0);
+            }
+            else {
+                setMargins(viewGroup.findViewById(R.id.cadre), 0, 690, 0, 0);
+                setMargins(link,0, 180, 0, 0);
+            }
+            ViewGroup.LayoutParams layoutParams = link. getLayoutParams();
+            layoutParams.height = 650;
+            link.setLayoutParams(layoutParams);
+
+        }
+
+        //add photo if needed
         if (message.senderId.equals(uid))
                 return;
         String photoUrl = getUrl(message.senderId);
         if (photoUrl == null)
             return;
-        ImageView avatar = ((ImageView)viewGroup.findViewById(R.id.avatar));
+        ImageView avatar = viewGroup.findViewById(R.id.avatar);
         Glide.with(fragment).load(photoUrl).into(avatar);
     }
 
@@ -103,10 +120,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public int getLink(Message message, String uid, int position) {
         if (position == 0) {
-            //tmp
             if (message.senderId.equals(uid))
-                return R.drawable.link_left_to_right;
-            return R.drawable.link_right_to_left;
+                return R.drawable.link_start_right;
+            return R.drawable.link_start_left;
         }
         Message prev = messages.get(position - 1);
         if (message.senderId.equals(uid) && !prev.senderId.equals(uid))
@@ -130,6 +146,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 return friends.get(i).photoUrl;
         }
         return null;
+    }
+
+    public static void setMargins (View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
     }
 
 }
