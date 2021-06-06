@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.firebase.ui.auth.AuthUI;
@@ -214,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
             });
 
             //fetch message for all conversations
-            conversations.forEach(conversation -> {
+            Iterator<Conversation> it = conversations.iterator();
+            while (it.hasNext()) {
+                Conversation conversation = it.next();
                 new Thread(() -> {
                     OkHttpClient clientConv = new OkHttpClient().newBuilder()
                             .build();
@@ -234,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } catch (IOException | JSONException e) {}
                 }).start();
-            });
+            }
         }).start();
     }
 
