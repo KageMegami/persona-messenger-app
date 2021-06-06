@@ -28,9 +28,10 @@
         android:id="@+id/bubble"
         android:layout_width="340dp"
         android:layout_height="57dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="-25dp"
+        android:layout_marginStart="-24dp"
+        android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/cadre"
+        android:layout_alignTop="@+id/cadre"
         app:srcCompat="@drawable/long_left" />
 
     <TextView
