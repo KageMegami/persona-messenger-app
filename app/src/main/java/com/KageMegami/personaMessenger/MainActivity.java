@@ -114,16 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                     }
                 });
-                FirebaseUserMetadata metadata = user.getMetadata();
-                long creation = metadata.getCreationTimestamp();
-                long last = metadata.getLastSignInTimestamp();
-                if (creation == last) {
-                    //Welcome new user for the first time
-                    newUser(user);
-                } else {
-                    //known user
-                    loadData();
-                }
+                getUserInfo(user);
             });
         });
         if (auth.getCurrentUser() == null)
@@ -131,7 +122,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void newUser(FirebaseUser user) {
+    private void getUserInfo(FirebaseUser user) {
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            Request request = new Request.Builder()
+                    .url(url + "/users")
+                    .method("GET", null)
+                    .addHeader("Authorization", "Bearer " + idToken)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    if (new JSONObject(response.body().string()).getBoolean("exist") == true)
+                        loadData();
+                    else
+                        newUser(user);
+                }
+            } catch (IOException | JSONException e) {}
+        }).start();
+    }
+    private void newUser(FirebaseUser user) {
+        runOnUiThread(()-> {
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
+        });
         new Thread(() -> {
             JSONObject bodyjson = new JSONObject();
             try {
@@ -154,10 +169,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Response response = client.newCall(request).execute();
             } catch (IOException e) {}
-            runOnUiThread(()-> {
-                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
-            });
         }).start();
     }
 
