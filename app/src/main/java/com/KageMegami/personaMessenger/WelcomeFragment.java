@@ -60,11 +60,11 @@ public class WelcomeFragment extends Fragment {
     }
 
     private void selectImage(Context context) {
-        if (ContextCompat.checkSelfPermission(getContext(), CAMERA) == PERMISSION_DENIED)
-            requestPermissionLauncher.launch(CAMERA);
+        /*if (ContextCompat.checkSelfPermission(getContext(), CAMERA) == PERMISSION_DENIED)
+            requestPermissionLauncher.launch(CAMERA);*/
         if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED)
             requestPermissionLauncher.launch(WRITE_EXTERNAL_STORAGE);
-        if (ContextCompat.checkSelfPermission(getContext(), CAMERA) == PERMISSION_DENIED || ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED)
+        if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED)
             return;;
 
         //si je veux la photo

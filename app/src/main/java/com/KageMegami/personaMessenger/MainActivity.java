@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     public List<Friend> friendlist = null;
     FirebaseAuth auth;
     FirebaseStorage storage;
-    private String url = "http://192.168.200.156:3000";
-    //private String url = "https://salty-brushlands-38990.herokuapp.com";
+    //private String url = "http://192.168.200.156:3000";
+    private String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,4 +301,14 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         MyApplication.activityPaused();
     }
+
+    @Override
+    public void onBackPressed() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment.getChildFragmentManager().getFragments().get(0).getClass() == Messenger.class)
+            super.onBackPressed();
+        else
+            moveTaskToBack(false);
+    }
+
 }
