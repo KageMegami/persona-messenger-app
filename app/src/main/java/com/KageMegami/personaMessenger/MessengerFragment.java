@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
-public class Messenger extends Fragment {
+public class MessengerFragment extends Fragment {
     private String convId;
     private Conversation conversation;
     protected RecyclerView mRecyclerView;
@@ -46,7 +46,7 @@ public class Messenger extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         convId = getArguments().getString("conversation_id");
-        conversation = ((MainActivity)getActivity()).getConversation(convId);
+        conversation = Data.getInstance().getConversation(convId);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Messenger extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
-        mAdapter = new MessageAdapter(conversation.messages, ((MainActivity)getActivity()).friendlist, this);
+        mAdapter = new MessageAdapter(conversation.messages, Data.getInstance().getFriends(), this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.addItemDecoration(new ItemDecorator(-120));
@@ -69,8 +69,6 @@ public class Messenger extends Fragment {
     public void onViewCreated(@NonNull View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.scrollToPosition(0);
-
-       // messageContainer = view.findViewById(R.id.messageList);
 
         //set listener for the back button
  /*       view.findViewById(R.id.back).setOnClickListener(v -> {
@@ -85,7 +83,7 @@ public class Messenger extends Fragment {
                 EditText box = ((EditText)view.findViewById(R.id.message));
                 String message = box.getText().toString();
                 if (message.length() == 0)
-                        return;
+                    return;
                 box.setText("");
 
                 //send message to server
@@ -117,12 +115,12 @@ public class Messenger extends Fragment {
         mLayoutManager.scrollToPosition(0);
     }
 
-    public static void hideKeyboard(Activity activity) {
+   /* public static void hideKeyboard(Activity activity) {
         InputMethodManager inputManager = (InputMethodManager) activity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         View currentFocusedView = activity.getCurrentFocus();
         if (currentFocusedView != null) {
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
+    }*/
 }

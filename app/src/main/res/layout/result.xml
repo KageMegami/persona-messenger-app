@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF">
+
+
+
+    <ImageView
+        android:id="@+id/friend_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleY="1.13"
+        android:scaleX="1.13"
+        android:layout_alignEnd="@+id/cadre"
+        android:layout_alignBottom="@+id/cadre"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="14dp"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/cadre"
+        android:layout_width="100dp"
+        android:layout_height="85dp"
+        app:srcCompat="@drawable/cadre" />
+
+    <ImageView
+        android:id="@+id/bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/cadre"
+        android:layout_marginStart="-23dp"
+        app:srcCompat="@drawable/bubble_list" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="157dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="26dp"
+        android:layout_toEndOf="@+id/cadre"
+        android:fontFamily="@font/persona"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="14dp" />
+
+    <ImageView
+        android:id="@+id/add_friend"
+        android:layout_width="25dp"
+        android:layout_height="22dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="205dp"
+        android:layout_marginTop="42dp"
+        android:layout_toEndOf="@+id/cadre"
+        app:srcCompat="@drawable/cross" />
+</RelativeLayout>

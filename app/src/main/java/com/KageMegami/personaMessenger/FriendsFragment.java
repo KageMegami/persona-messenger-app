@@ -46,7 +46,7 @@ public class FriendsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new FriendAdapter(((MainActivity)getActivity()).friendlist, this);
+        mAdapter = new FriendAdapter(Data.getInstance().getFriends(), this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         return rootView;
@@ -60,6 +60,10 @@ public class FriendsFragment extends Fragment {
         BottomBarFragment bottom = (BottomBarFragment)getChildFragmentManager().getFragments().get(0);
         bottom.getView().findViewById(R.id.chats).setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_friendsFragment_to_homeFragment);
+        });
+        view.findViewById(R.id.add).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+            startActivity(intent);
         });
     }
 }

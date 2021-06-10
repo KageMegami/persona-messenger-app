@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import entity.Conversation;
-import entity.Friend;
+import entity.User;
 import com.KageMegami.personaMessenger.R;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
 
     public List<Conversation> conversations;
-    public List<Friend> users;
+    public List<User> users;
     private Fragment fragment;
     private String uid;
 
@@ -40,7 +40,7 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         }
     }
 
-    public ConvAdapter(List<Conversation> dataSet, List<Friend> users, Fragment frag) {
+    public ConvAdapter(List<Conversation> dataSet, List<User> users, Fragment frag) {
         conversations = dataSet;
         fragment = frag;
         this.users = users;
@@ -58,7 +58,7 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Conversation conv = conversations.get(position);
         if (!conv.isGroup) {
-            Friend friend = getFriend(conv);
+            User friend = getFriend(conv);
             if (friend == null)
                 return;
             Glide.with(fragment).load(friend.photoUrl).into(viewHolder.image);
@@ -81,7 +81,9 @@ public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.ViewHolder> {
         return conversations.size();
     }
 
-    public Friend getFriend(Conversation conv) {
+    public User getFriend(Conversation conv) {
+        if (conv == null)
+            return null;
         String friendId = conv.users[0].equals(uid) ? conv.users[1] : conv.users[0];
         for (int i = 0; i < users.size(); i += 1) {
             if (users.get(i).id.equals(friendId))

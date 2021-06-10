@@ -17,35 +17,38 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/friends_title" />
 
+    <RelativeLayout
+        android:id="@+id/cadre_input"
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/cadre_input"
+        app:layout_constraintTop_toBottomOf="@id/friends_title"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/search_users"
+            android:layout_width="335dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="3dp"
+            android:hint="@string/hint"
+            android:textSize="14sp"
+            android:inputType="text"
+            android:maxLength="40"
+            android:imeOptions="actionSearch"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:maxLines="1" />
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="32dp"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toTopOf="@+id/botomBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friends_title" />
-
-    <fragment
-        android:id="@+id/botomBar"
-        android:name="com.KageMegami.personaMessenger.BottomBarFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/add"
-        android:layout_width="25dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="80dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cross" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/cadre_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>
