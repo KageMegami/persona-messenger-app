@@ -27,6 +27,7 @@ import adapter.ResultAdapter;
 import entity.User;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AddFriendActivity extends AppCompatActivity {
@@ -61,11 +62,34 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     public void sendFriendRequest(User user){
-        results.remove(user);
-        mAdapter.notifyDataSetChanged();
-        mLayoutManager.scrollToPosition(0);
-        Toast toast = Toast.makeText(this, "An invitation has been send to " + user.name, Toast.LENGTH_LONG);
-        toast.show();
+
+        new Thread(() -> {
+            JSONObject bodyjson = new JSONObject();
+            try {
+                bodyjson.put("id", user.id);
+            } catch (JSONException e) { return; }
+            RequestBody body = RequestBody.create(MainActivity.JSON, bodyjson.toString());
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            Request request = new Request.Builder()
+                    .url(MainActivity.url + "/friends/request")
+                    .post(body)
+                    .addHeader("Authorization", "Bearer " + MainActivity.idToken)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        Data.getInstance().myFriends.add(user.id);
+                        results.remove(user);
+                        mAdapter.notifyDataSetChanged();
+                        mLayoutManager.scrollToPosition(0);
+                        Toast toast = Toast.makeText(this, "An invitation has been send to " + user.name, Toast.LENGTH_LONG);
+                        toast.show();
+                    });
+                }
+            } catch (IOException e) {}
+        }).start();
     }
 
     public void performSearch(final String input) {
@@ -88,7 +112,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     JSONArray users = new JSONObject(response.body().string()).getJSONArray("data");
                     for (int i = 0; i < users.length(); i += 1) {
                         JSONObject result = users.getJSONObject(i);
-                        if (Data.getInstance().getFriend(result.getString("id")) == null)
+                        if (!Data.getInstance().isMyFriend(result.getString("id")))
                             results.add(new User(users.getJSONObject(i)));
                     }
                 }

@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     bodyjson.put("photoUrl", "https://i1.sndcdn.com/artworks-000023237585-jphshz-t500x500.jpg");
                 //set user
-                Data.getInstance().user = new User(bodyjson);
+                Data.getInstance().setUser(bodyjson);
             } catch (JSONException e) { return; }
             RequestBody body = RequestBody.create(JSON, bodyjson.toString());
             OkHttpClient client = new OkHttpClient().newBuilder()

@@ -1,5 +1,6 @@
 package com.KageMegami.personaMessenger;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,12 +14,13 @@ public class Data {
     private static Data data = null;
     private List<Conversation> conversations;
     private List<User> friends;
-    public User user;
-
+    private User me;
+    public List<String> myFriends;
 
     private Data() {
         conversations = new ArrayList<>();
         friends = new ArrayList<>();
+        myFriends = new ArrayList<>();
     }
 
     public static Data getInstance() {
@@ -36,7 +38,7 @@ public class Data {
     }
 
     public User getUser() {
-        return user;
+        return me;
     }
 
     public Conversation getConversation(String convId) {
@@ -59,7 +61,21 @@ public class Data {
 
     public void setUser(JSONObject obj) {
         try {
-            user = new User(obj);
+            me = new User(obj);
+            if (obj.has("friends")) {
+                JSONArray tmp = obj.getJSONArray("friends");
+                for (int i = 0; i < tmp.length(); i += 1) {
+                    myFriends.add(tmp.getString(i));
+                }
+            }
         } catch (JSONException e) {}
+    }
+
+    public boolean isMyFriend(final String id) {
+        for (int i = 0; i < myFriends.size(); i += 1) {
+            if (myFriends.get(i).equals(id))
+                return true;
+        }
+        return false;
     }
 }

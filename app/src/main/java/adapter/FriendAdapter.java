@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import entity.User;
+
+import com.KageMegami.personaMessenger.Data;
 import com.KageMegami.personaMessenger.R;
 import com.bumptech.glide.Glide;
 
@@ -26,11 +28,13 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public ImageView image;
+        public View request;
 
         public ViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
             image = view.findViewById(R.id.friend_image);
+            request = view.findViewById(R.id.friend_request);
 
         }
     }
@@ -52,6 +56,10 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         User friend = friends.get(position);
         Glide.with(fragment).load(friend.photoUrl).into(viewHolder.image);
         viewHolder.name.setText(friend.name);
+        if (!Data.getInstance().isMyFriend(friend.id))
+            viewHolder.request.setVisibility(View.VISIBLE);
+        else
+            viewHolder.request.setVisibility(View.GONE);
       /*  viewHolder.itemView.setOnClickListener(v -> {
         });*/
     }
