@@ -42,6 +42,16 @@
             android:maxLines="1" />
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/loadingGif"
+        android:layout_width="241dp"
+        android:layout_height="222dp"
+        android:layout_marginTop="156dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/loading" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

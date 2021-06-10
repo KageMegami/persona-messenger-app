@@ -2,14 +2,18 @@ package com.KageMegami.personaMessenger;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +34,7 @@ public class AddFriendActivity extends AppCompatActivity {
     protected ResultAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     private List<User> results;
+    private ImageView loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,9 @@ public class AddFriendActivity extends AppCompatActivity {
             }
             return false;
         });
+        loading = findViewById(R.id.loadingGif);
+        Glide.with(this).load(R.drawable.loading).into(loading);
+        loading.setVisibility(View.GONE);
     }
 
     public void sendFriendRequest(User user){
@@ -63,6 +71,9 @@ public class AddFriendActivity extends AppCompatActivity {
     public void performSearch(final String input) {
         if (input.length() == 0)
                 return;
+        results.clear();
+        mAdapter.notifyDataSetChanged();
+        loading.setVisibility(View.VISIBLE);
         new Thread(() -> {
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
@@ -74,7 +85,6 @@ public class AddFriendActivity extends AppCompatActivity {
             try {
                 Response response = client.newCall(request).execute();
                 if (response.isSuccessful()) {
-                    results.clear();
                     JSONArray users = new JSONObject(response.body().string()).getJSONArray("data");
                     for (int i = 0; i < users.length(); i += 1) {
                         JSONObject result = users.getJSONObject(i);
@@ -84,6 +94,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 }
             } catch (IOException | JSONException e) {}
             runOnUiThread(() -> {
+                loading.setVisibility(View.GONE);
                 mAdapter.notifyDataSetChanged();
                 mLayoutManager.scrollToPosition(0);
             });
