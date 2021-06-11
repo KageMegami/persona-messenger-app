@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new ConvAdapter(((MainActivity)getActivity()).conversations, ((MainActivity)getActivity()).friendlist, this);
+        mAdapter = new ConvAdapter(Data.getInstance().getConversations(), Data.getInstance().getFriends(), this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         return rootView;

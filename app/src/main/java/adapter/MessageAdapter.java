@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import entity.Friend;
+import entity.User;
 import entity.Message;
 import com.KageMegami.personaMessenger.R;
 import com.bumptech.glide.Glide;
@@ -19,7 +19,7 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     public List<Message> messages;
-    public List<Friend> friends;
+    public List<User> friends;
     private Fragment fragment;
 
 
@@ -34,7 +34,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    public MessageAdapter(List<Message> dataSet, List<Friend> friends, Fragment frag) {
+    public MessageAdapter(List<Message> dataSet, List<User> friends, Fragment frag) {
         messages = dataSet;
         fragment = frag;
         this.friends = friends;

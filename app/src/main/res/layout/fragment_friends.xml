@@ -23,6 +23,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/botomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/friends_title" />
 
@@ -36,6 +37,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/add"
+        android:layout_width="25dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cross" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

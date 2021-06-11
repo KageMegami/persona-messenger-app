@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/message_background"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/friends_title"
+        android:layout_width="264dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/friends_title" />
+
+    <RelativeLayout
+        android:id="@+id/cadre_input"
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/cadre_input"
+        app:layout_constraintTop_toBottomOf="@id/friends_title"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/search_users"
+            android:layout_width="335dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="3dp"
+            android:hint="@string/hint"
+            android:textSize="14sp"
+            android:inputType="text"
+            android:maxLength="40"
+            android:imeOptions="actionSearch"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:maxLines="1" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/loadingGif"
+        android:layout_width="241dp"
+        android:layout_height="222dp"
+        android:layout_marginTop="156dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/loading" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:overScrollMode="never"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cadre_input" />
+</androidx.constraintlayout.widget.ConstraintLayout>
