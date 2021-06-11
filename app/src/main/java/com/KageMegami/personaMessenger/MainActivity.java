@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public static Socket mSocket;
     FirebaseAuth auth;
     FirebaseStorage storage;
-    public static final String url = "http://192.168.200.156:3000";
-    //public static final String url = "https://salty-brushlands-38990.herokuapp.com";
+    //public static final String url = "http://192.168.200.156:3000";
+    public static final String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

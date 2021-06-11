@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.ResultAdapter;
+import entity.Conversation;
 import entity.User;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -62,7 +63,8 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     public void sendFriendRequest(User user){
-
+        results.remove(user);
+        mAdapter.notifyDataSetChanged();
         new Thread(() -> {
             JSONObject bodyjson = new JSONObject();
             try {
@@ -72,23 +74,23 @@ public class AddFriendActivity extends AppCompatActivity {
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             Request request = new Request.Builder()
-                    .url(MainActivity.url + "/friends/request")
+                    .url(MainActivity.url + "/friends")
                     .post(body)
                     .addHeader("Authorization", "Bearer " + MainActivity.idToken)
                     .build();
             try {
                 Response response = client.newCall(request).execute();
                 if (response.isSuccessful()) {
+                    JSONObject body_res = new JSONObject(response.body().string());
+                    if (body_res.has("data"))
+                        Data.getInstance().getConversations().add(new Conversation(body_res.getJSONObject("data")));
                     runOnUiThread(() -> {
                         Data.getInstance().myFriends.add(user.id);
-                        results.remove(user);
-                        mAdapter.notifyDataSetChanged();
-                        mLayoutManager.scrollToPosition(0);
                         Toast toast = Toast.makeText(this, "An invitation has been send to " + user.name, Toast.LENGTH_LONG);
                         toast.show();
                     });
                 }
-            } catch (IOException e) {}
+            } catch (IOException | JSONException e) {}
         }).start();
     }
 

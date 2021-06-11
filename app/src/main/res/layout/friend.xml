@@ -81,7 +81,7 @@
             app:srcCompat="@drawable/accept" />
 
         <ImageView
-            android:id="@+id/refuse"
+            android:id="@+id/decline"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="3dp"
