@@ -90,18 +90,13 @@ public class FriendsFragment extends Fragment {
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             Request request = new Request.Builder()
-                    .url(MainActivity.url + "/friends")
+                    .url(MainActivity.url + "/friends/accept")
                     .post(body)
                     .addHeader("Authorization", "Bearer " + MainActivity.idToken)
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    JSONObject body_res = new JSONObject(response.body().string());
-                    if (body_res.has("data"))
-                        Data.getInstance().getConversations().add(new Conversation(body_res.getJSONObject("data")));
-                }
-            } catch (IOException | JSONException e) {}
+            } catch (IOException e) {}
         }).start();
     }
 
@@ -130,6 +125,10 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void updateRecyclerView () {
         mAdapter.notifyDataSetChanged();
     }
 }

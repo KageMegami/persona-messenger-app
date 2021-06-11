@@ -59,4 +59,8 @@ public class HomeFragment extends Fragment {
             act.signOut();
         });
     }
+
+    public void updateRecyclerView () {
+        mAdapter.notifyDataSetChanged();
+    }
 }
