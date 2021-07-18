@@ -85,7 +85,6 @@ public class MessengerFragment extends Fragment {
                 if (message.length() == 0)
                     return;
                 box.setText("");
-
                 //send message to server
                 JSONObject newMessage = new JSONObject();
                 try {
@@ -93,13 +92,13 @@ public class MessengerFragment extends Fragment {
                     newMessage.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     newMessage.put("message", message);
                     JSONObject date = new JSONObject();
-                    date.put("_seconds", System.currentTimeMillis() / 1000);
+                    date.put("_seconds", System.currentTimeMillis() / 1000L);
                     newMessage.put("message", message);
                     newMessage.put("date", date);
 
                 } catch (JSONException e) {}
                 MainActivity.mSocket.emit("new_message", newMessage);
-                conversation.messages.add(new Message(message, FirebaseAuth.getInstance().getCurrentUser().getUid()));
+                conversation.messages.add(new Message(message, FirebaseAuth.getInstance().getCurrentUser().getUid(), System.currentTimeMillis()));
                 mAdapter.notifyDataSetChanged();
                 mLayoutManager.scrollToPosition(0);
             }

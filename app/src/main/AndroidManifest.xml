@@ -19,13 +19,15 @@
         <activity
             android:name=".AddFriendActivity"
             android:theme="@style/Theme.PersonaMessenger.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_add_friend" >
         </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.PersonaMessenger.NoActionBar"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public static Socket mSocket;
     FirebaseAuth auth;
     FirebaseStorage storage;
-    //public static final String url = "http://192.168.200.156:3000";
-    public static final String url = "https://salty-brushlands-38990.herokuapp.com";
+    public static final String url = "http://192.168.200.156:3000";
+    //public static final String url = "https://salty-brushlands-38990.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
                         Conversation tmp = Data.getInstance().getConversation(convId);
                         if (tmp == null)
                             return;
+
+                        //send notification
                         if (!MyApplication.isActivityVisible()) {
                             try {
                                 Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -90,15 +92,39 @@ public class MainActivity extends AppCompatActivity {
                             } catch (Exception e) {
                             }
                         }
-                        tmp.messages.add(new Message(content, sender));
+                        tmp.messages.add(new Message(content, sender, ((JSONObject)message[0]).getJSONObject("date")));
                         runOnUiThread(() -> {
                             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
                             Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
                             if (frag.getClass() == MessengerFragment.class)
-                                ((MessengerFragment) frag).updateRecyclerView();
+                                ((MessengerFragment)frag).updateRecyclerView();
                         });
-                    } catch (JSONException e) {
-                    }
+                    } catch (JSONException e) {}
+                });
+
+                //on new conversation
+                mSocket.on("new_conversation", (conversation) -> {
+                    try {
+                        Data.getInstance().getConversations().add(new Conversation((JSONObject)conversation[0]));
+                    } catch (JSONException e) {}
+                    runOnUiThread(() -> {
+                        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                        Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                        if (frag.getClass() == HomeFragment.class)
+                            ((HomeFragment)frag).updateRecyclerView();
+                    });
+                });
+
+                mSocket.on("new_friend", (friend) -> {
+                    try {
+                        Data.getInstance().getFriends().add(new User((JSONObject)friend[0]));
+                    } catch (JSONException e) {}
+                    runOnUiThread(() -> {
+                        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                        Fragment frag = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                        if (frag.getClass() == FriendsFragment.class)
+                            ((FriendsFragment)frag).updateRecyclerView();
+                    });
                 });
                 getUserInfo(user);
             });
@@ -132,10 +158,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void newUser(FirebaseUser user) {
-        runOnUiThread(()-> {
-            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-            navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
-        });
         new Thread(() -> {
             JSONObject bodyjson = new JSONObject();
             try {
@@ -159,6 +181,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Response response = client.newCall(request).execute();
             } catch (IOException e) {}
+            runOnUiThread(()-> {
+                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                navHostFragment.getNavController().navigate(R.id.action_loadingFragment_to_welcomeFragment);
+            });
         }).start();
     }
 
@@ -179,7 +205,11 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     JSONArray friends = new JSONObject(response.body().string()).getJSONArray("data");
                     for (int i = 0; i < friends.length(); i += 1) {
-                        friends_list.add(new User(friends.getJSONObject(i)));
+                        JSONObject friend = friends.getJSONObject(i);
+                        if (!Data.getInstance().isMyFriend(friend.getString("id")))
+                            friends_list.add(0, new User(friend));
+                        else
+                            friends_list.add(new User(friend));
                     }
                 }
             } catch (IOException | JSONException e) {}

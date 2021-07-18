@@ -81,16 +81,13 @@ public class AddFriendActivity extends AppCompatActivity {
             try {
                 Response response = client.newCall(request).execute();
                 if (response.isSuccessful()) {
-                    JSONObject body_res = new JSONObject(response.body().string());
-                    if (body_res.has("data"))
-                        Data.getInstance().getConversations().add(new Conversation(body_res.getJSONObject("data")));
                     runOnUiThread(() -> {
                         Data.getInstance().myFriends.add(user.id);
                         Toast toast = Toast.makeText(this, "An invitation has been send to " + user.name, Toast.LENGTH_LONG);
                         toast.show();
                     });
                 }
-            } catch (IOException | JSONException e) {}
+            } catch (IOException e) {}
         }).start();
     }
 
@@ -114,7 +111,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     JSONArray users = new JSONObject(response.body().string()).getJSONArray("data");
                     for (int i = 0; i < users.length(); i += 1) {
                         JSONObject result = users.getJSONObject(i);
-                        if (!Data.getInstance().isMyFriend(result.getString("id")))
+                        if (!Data.getInstance().isMyFriend(result.getString("id")) && Data.getInstance().getFriend(result.getString("id")) == null)
                             results.add(new User(users.getJSONObject(i)));
                     }
                 }
